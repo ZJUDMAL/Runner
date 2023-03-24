@@ -7,6 +7,7 @@ on:
         description: Release version name
         required: true
 
+run-name: ${{ github.event.inputs.name }}
 
 jobs:
   build:
@@ -60,6 +61,7 @@ jobs:
         else
           sha256sum XStudioMeshModeler-${{ matrix.config.os }}-${{ matrix.config.arch }}-${{ matrix.config.mode }}.tar.gz > SHA256SUM
         fi
+      shell: bash
 
     - name: Release
       uses: softprops/action-gh-release@v1
