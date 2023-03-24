@@ -14,12 +14,12 @@ jobs:
     strategy:
       matrix:
         config:
-        - { name: "Windows x64 debug", os: windows-latest, arch: x64, mode: debug }
-        - { name: "Windows x64 releasedbg", os: windows-latest, arch: x64, mode: releasedbg }
-        - { name: "Ubuntu x86_64 debug", os: ubuntu-latest, arch: x86_64, mode: debug }
-        - { name: "Ubuntu x86_64 releasedbg", os: ubuntu-latest, arch: x86_64, mode: releasedbg }
-        - { name: "MacOS x86_64 debug", os: macOS-latest, arch: x86_64, mode: debug }
-        - { name: "MacOS x86_64 releasedbg", os: macOS-latest, arch: x86_64, mode: releasedbg }
+        - { name: "Windows x64 debug", os: windows-latest, arch: x64, mode: debug, qt: win64_msvc2019_64 }
+        - { name: "Windows x64 releasedbg", os: windows-latest, arch: x64, mode: releasedbg, qt: win64_msvc2019_64 }
+        - { name: "Ubuntu x86_64 debug", os: ubuntu-latest, arch: x86_64, mode: debug, qt: gcc_64  }
+        - { name: "Ubuntu x86_64 releasedbg", os: ubuntu-latest, arch: x86_64, mode: releasedbg, qt: gcc_64 }
+        - { name: "MacOS x86_64 debug", os: macOS-latest, arch: x86_64, mode: debug, qt: clang_64 }
+        - { name: "MacOS x86_64 releasedbg", os: macOS-latest, arch: x86_64, mode: releasedbg, qt: clang_64 }
 
     name: ${{ matrix.config.name }}
     runs-on: ${{ matrix.config.os }}
@@ -40,7 +40,7 @@ jobs:
       with:
         version: '5.15.2'
         target: 'desktop'
-        arch: 'win64_msvc2019_64'
+        arch: ${{ matrix.config.qt }}
         cache: 'true'
         setup-python: 'false'
         archives: 'qtbase'
@@ -59,7 +59,7 @@ jobs:
       uses: actions/cache/restore@v3
       with:
         path: ${{ env.XMAKE_GLOBALDIR }}\.xmake\packages
-        key: x-studio-cache-package-${{ matrix.arch }}-${{ matrix.os }}
+        key: x-studio-cache-package-${{ matrix.config.arch }}-${{ matrix.config.os }}
 
     - name: Install package
       run: |
@@ -69,7 +69,7 @@ jobs:
       uses: actions/cache/save@v3
       with:
         path: ${{ env.XMAKE_GLOBALDIR }}\.xmake\packages
-        key: x-studio-cache-package-${{ matrix.arch }}-${{ matrix.os }}
+        key: x-studio-cache-package-${{ matrix.config.arch }}-${{ matrix.config.os }}
 
     - name: Configure xmake and install dependencies
       run: xmake config --arch=${{ matrix.config.arch }} --mode=${{ matrix.config.mode }} --ccache=n
@@ -86,7 +86,7 @@ jobs:
       run: |
         tar -C ./package -zcvf X-Studio-${{ matrix.config.os }}-${{ matrix.config.arch }}-${{ matrix.config.mode }}.tar.gz .
         if [ "$RUNNER_OS" == "macOS" ]; then
-          shasum -a 256 X-Studio-${{ matrix.os }}-${{ matrix.arch }}-${{ matrix.mode }}.tar.gz > SHA256SUM
+          shasum -a 256 X-Studio-${{ matrix.config.os }}-${{ matrix.config.arch }}-${{ matrix.config.mode }}.tar.gz > SHA256SUM
         else
           sha256sum X-Studio-${{ matrix.config.os }}-${{ matrix.config.arch }}-${{ matrix.config.mode }}.tar.gz > SHA256SUM
         fi

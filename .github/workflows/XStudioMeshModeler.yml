@@ -57,7 +57,7 @@ jobs:
       run: |
         tar -C ./package -zcvf XStudioMeshModeler-${{ matrix.config.os }}-${{ matrix.config.arch }}-${{ matrix.config.mode }}.tar.gz .
         if [ "$RUNNER_OS" == "macOS" ]; then
-          shasum -a 256 XStudioMeshModeler-${{ matrix.os }}-${{ matrix.arch }}-${{ matrix.mode }}.tar.gz > SHA256SUM
+          shasum -a 256 XStudioMeshModeler-${{ matrix.config.os }}-${{ matrix.config.arch }}-${{ matrix.config.mode }}.tar.gz > SHA256SUM
         else
           sha256sum XStudioMeshModeler-${{ matrix.config.os }}-${{ matrix.config.arch }}-${{ matrix.config.mode }}.tar.gz > SHA256SUM
         fi
