@@ -7,137 +7,47 @@ on:
         description: Release version name
         required: true
 
+run-name: ${{ github.event.inputs.name }}
 
 jobs:
-  MacOS:
+  build:
     strategy:
       matrix:
-        os: [macOS-latest]
-        arch: [x86_64]
-        mode: [debug, releasedbg]
-    runs-on: ${{ matrix.os }}
+        config:
+        - { name: "Windows x64 debug", os: windows-latest, arch: x64, mode: debug }
+        - { name: "Windows x64 releasedbg", os: windows-latest, arch: x64, mode: releasedbg }
+        - { name: "Ubuntu x86_64 debug", os: ubuntu-latest, arch: x86_64, mode: debug }
+        - { name: "Ubuntu x86_64 releasedbg", os: ubuntu-latest, arch: x86_64, mode: releasedbg }
+        - { name: "MacOS x86_64 releasedbg", os: macOS-latest, arch: x86_64, mode: debug }
+        - { name: "MacOS x86_64 releasedbg", os: macOS-latest, arch: x86_64, mode: releasedbg }
+
+    name: ${{ matrix.config.name }}
+    runs-on: ${{ matrix.config.os }}
+
     steps:
-    - uses: actions/checkout@v3
-      with:
-        repository: 'ZJUDMAL/XStudioBrepModeler'
-        token: ${{ secrets.XSTUDIOPACKAGES_PUBLISH_TOKEN }}
-
-    - uses: xmake-io/github-action-setup-xmake@v1
-      with:
-        xmake-version: latest
-    
-    - name: Configure xmake and install dependencies
-      run: xmake config --arch=${{ matrix.arch }} --mode=${{ matrix.mode }} --ccache=n
-    - name: Build
-      run: |
-        xmake build BUILD_ALL
-    
-      # Setup installation configuration
-    - name: Configure xmake for installation
-      run: xmake config --arch=${{ matrix.arch }} --mode=${{ matrix.mode }} --ccache=n
-
-    - name: Package
-      run: |
-        xmake package BUILD_ALL
-
-    - name: Archive and upload artifact
-      run: |
-        tar -C ./package -zcvf XStudioBrepModeler-${{ matrix.os }}-${{ matrix.arch }}-${{ matrix.mode }}.tar.gz .
-        shasum -a 256 XStudioBrepModeler-${{ matrix.os }}-${{ matrix.arch }}-${{ matrix.mode }}.tar.gz > SHA256SUM
-
-    - name: Release
-      uses: softprops/action-gh-release@v1
-      with:
-        files: XStudioBrepModeler-${{ matrix.os }}-${{ matrix.arch }}-${{ matrix.mode }}.tar.gz
-        # note you'll typically need to create a personal access token
-        # with permissions to create releases in the other repo
-        token: ${{ secrets.XSTUDIOPACKAGES_PUBLISH_TOKEN }}
-        name: ${{ github.event.inputs.name }}
-        tag_name: ${{ github.event.inputs.name }}
-        append_body: true
-        body_path: SHA256SUM
-        repository: ZJUDMAL/XStudioPackages
-
-  Windows:
-    strategy:
-      matrix:
-        os: [windows-latest]
-        arch: [x64]
-        mode: [debug, releasedbg]
-    runs-on: ${{ matrix.os }}
-    steps:
-    - uses: actions/checkout@v3
-      with:
-        repository: 'ZJUDMAL/XStudioBrepModeler'
-        token: ${{ secrets.XSTUDIOPACKAGES_PUBLISH_TOKEN }}
-        
-    - uses: xmake-io/github-action-setup-xmake@v1
-      with:
-        xmake-version: latest
-    
-    - name: Configure xmake and install dependencies
-      run: xmake config --arch=${{ matrix.arch }} --mode=${{ matrix.mode }} --ccache=n
-    - name: Build
-      run: |
-        xmake build BUILD_ALL
-    
-      # Setup installation configuration
-    - name: Configure xmake for installation
-      run: xmake config --arch=${{ matrix.arch }} --mode=${{ matrix.mode }} --ccache=n
-
-    - name: Package
-      run: |
-        xmake package BUILD_ALL
-
-    - name: Archive and upload artifact
-      run: |
-        tar -C ./package -zcvf XStudioBrepModeler-${{ matrix.os }}-${{ matrix.arch }}-${{ matrix.mode }}.tar.gz .
-        sha256sum XStudioBrepModeler-${{ matrix.os }}-${{ matrix.arch }}-${{ matrix.mode }}.tar.gz > SHA256SUM
-
-    - name: Release
-      uses: softprops/action-gh-release@v1
-      with:
-        files: XStudioBrepModeler-${{ matrix.os }}-${{ matrix.arch }}-${{ matrix.mode }}.tar.gz
-        # note you'll typically need to create a personal access token
-        # with permissions to create releases in the other repo
-        token: ${{ secrets.XSTUDIOPACKAGES_PUBLISH_TOKEN }}
-        name: ${{ github.event.inputs.name }}
-        tag_name: ${{ github.event.inputs.name }}
-        append_body: true
-        body_path: SHA256SUM
-        repository: ZJUDMAL/XStudioPackages
-
-  Linux:
-    strategy:
-      matrix:
-        os: [ubuntu-latest]
-        arch: [x86_64]
-        mode: [debug, releasedbg]
-    runs-on: ${{ matrix.os }}
-    steps:
-    - uses: actions/checkout@v3
-      with:
-        repository: 'ZJUDMAL/XStudioBrepModeler'
-        token: ${{ secrets.XSTUDIOPACKAGES_PUBLISH_TOKEN }}
-        
     - name: Install system dependencies
+      if: runner.os == 'Linux'
       run: |
         sudo apt-get update
 
+    - uses: actions/checkout@v3
+      with:
+        repository: 'ZJUDMAL/XStudioBrepModeler'
+        token: ${{ secrets.XSTUDIOPACKAGES_PUBLISH_TOKEN }}
+
     - uses: xmake-io/github-action-setup-xmake@v1
       with:
         xmake-version: latest
+        actions-cache-folder: '.xmake-cache'
+        # xmake-cache-${actionsCacheKey}-${ver}-${sha}-${os.arch()}-${os.platform()}-${process.env.RUNNER_OS}
+        actions-cache-key: base
     
     - name: Configure xmake and install dependencies
-      run: xmake config --arch=${{ matrix.arch }} --mode=${{ matrix.mode }} --ccache=n
+      run: xmake config --arch=${{ matrix.config.arch }} --mode=${{ matrix.config.mode }} --ccache=n
 
     - name: Build
       run: |
         xmake build BUILD_ALL
-    
-      # Setup installation configuration
-    - name: Configure xmake for installation
-      run: xmake config --arch=${{ matrix.arch }} --mode=${{ matrix.mode }} --ccache=n
 
     - name: Package
       run: |
@@ -145,15 +55,18 @@ jobs:
 
     - name: Archive and upload artifact
       run: |
-        tar -C ./package -zcvf XStudioBrepModeler-${{ matrix.os }}-${{ matrix.arch }}-${{ matrix.mode }}.tar.gz .
-        sha256sum XStudioBrepModeler-${{ matrix.os }}-${{ matrix.arch }}-${{ matrix.mode }}.tar.gz > SHA256SUM
+        tar -C ./package -zcvf XStudioBrepModeler-${{ matrix.config.os }}-${{ matrix.config.arch }}-${{ matrix.config.mode }}.tar.gz .
+        if [ "$RUNNER_OS" == "macOS" ]; then
+          shasum -a 256 XStudioBrepModeler-${{ matrix.os }}-${{ matrix.arch }}-${{ matrix.mode }}.tar.gz > SHA256SUM
+        else
+          sha256sum XStudioBrepModeler-${{ matrix.config.os }}-${{ matrix.config.arch }}-${{ matrix.config.mode }}.tar.gz > SHA256SUM
+        fi
+      shell: bash
 
     - name: Release
       uses: softprops/action-gh-release@v1
       with:
-        files: XStudioBrepModeler-${{ matrix.os }}-${{ matrix.arch }}-${{ matrix.mode }}.tar.gz
-        # note you'll typically need to create a personal access token
-        # with permissions to create releases in the other repo
+        files: XStudioBrepModeler-${{ matrix.config.os }}-${{ matrix.config.arch }}-${{ matrix.config.mode }}.tar.gz
         token: ${{ secrets.XSTUDIOPACKAGES_PUBLISH_TOKEN }}
         name: ${{ github.event.inputs.name }}
         tag_name: ${{ github.event.inputs.name }}
