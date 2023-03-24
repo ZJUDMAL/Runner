@@ -45,11 +45,6 @@ jobs:
         tar -C ./package -zcvf XStudioBrepModeler-${{ matrix.os }}-${{ matrix.arch }}-${{ matrix.mode }}.tar.gz .
         shasum -a 256 XStudioBrepModeler-${{ matrix.os }}-${{ matrix.arch }}-${{ matrix.mode }}.tar.gz > SHA256SUM
 
-    - uses: actions/upload-artifact@v3
-      with:
-        name: XStudioBrepModeler-${{ matrix.os }}-${{ matrix.arch }}-${{ matrix.mode }}
-        path: XStudioBrepModeler-${{ matrix.os }}-${{ matrix.arch }}-${{ matrix.mode }}.tar.gz
-
     - name: Release
       uses: softprops/action-gh-release@v1
       with:
@@ -98,11 +93,6 @@ jobs:
       run: |
         tar -C ./package -zcvf XStudioBrepModeler-${{ matrix.os }}-${{ matrix.arch }}-${{ matrix.mode }}.tar.gz .
         sha256sum XStudioBrepModeler-${{ matrix.os }}-${{ matrix.arch }}-${{ matrix.mode }}.tar.gz > SHA256SUM
-
-    - uses: actions/upload-artifact@v3
-      with:
-        name: XStudioBrepModeler-${{ matrix.os }}-${{ matrix.arch }}-${{ matrix.mode }}
-        path: XStudioBrepModeler-${{ matrix.os }}-${{ matrix.arch }}-${{ matrix.mode }}.tar.gz
 
     - name: Release
       uses: softprops/action-gh-release@v1
@@ -157,11 +147,6 @@ jobs:
       run: |
         tar -C ./package -zcvf XStudioBrepModeler-${{ matrix.os }}-${{ matrix.arch }}-${{ matrix.mode }}.tar.gz .
         sha256sum XStudioBrepModeler-${{ matrix.os }}-${{ matrix.arch }}-${{ matrix.mode }}.tar.gz > SHA256SUM
-
-    - uses: actions/upload-artifact@v3
-      with:
-        name: XStudioBrepModeler-${{ matrix.os }}-${{ matrix.arch }}-${{ matrix.mode }}
-        path: XStudioBrepModeler-${{ matrix.os }}-${{ matrix.arch }}-${{ matrix.mode }}.tar.gz
 
     - name: Release
       uses: softprops/action-gh-release@v1
