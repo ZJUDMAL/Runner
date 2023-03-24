@@ -18,7 +18,7 @@ jobs:
         - { name: "Windows x64 releasedbg", os: windows-latest, arch: x64, mode: releasedbg }
         - { name: "Ubuntu x86_64 debug", os: ubuntu-latest, arch: x86_64, mode: debug }
         - { name: "Ubuntu x86_64 releasedbg", os: ubuntu-latest, arch: x86_64, mode: releasedbg }
-        - { name: "MacOS x86_64 releasedbg", os: macOS-latest, arch: x86_64, mode: debug }
+        - { name: "MacOS x86_64 debug", os: macOS-latest, arch: x86_64, mode: debug }
         - { name: "MacOS x86_64 releasedbg", os: macOS-latest, arch: x86_64, mode: releasedbg }
 
     name: ${{ matrix.config.name }}
