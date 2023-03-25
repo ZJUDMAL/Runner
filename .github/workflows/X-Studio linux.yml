@@ -16,7 +16,7 @@ jobs:
         config:
         # - { name: "Windows x64 debug", os: windows-latest, arch: x64, mode: debug, qt: win64_msvc2019_64 }
         #- { name: "Windows x64 releasedbg", os: windows-latest, arch: x64, mode: releasedbg, qt: win64_msvc2019_64 }
-        - { name: "Ubuntu x86_64 debug", os: ubuntu-latest, arch: x86_64, mode: debug, qt: gcc_64  }
+        - { name: "Ubuntu x86_64 debug", os: ubuntu-latest, arch: x86_64, mode: debug, qt_arch: gcc_64, qt_archive: 'qtbase qtdeclarative icu' }
         #- { name: "Ubuntu x86_64 releasedbg", os: ubuntu-latest, arch: x86_64, mode: releasedbg, qt: gcc_64 }
         # - { name: "MacOS x86_64 debug", os: macOS-latest, arch: x86_64, mode: debug, qt: clang_64 }
         #- { name: "MacOS x86_64 releasedbg", os: macOS-latest, arch: x86_64, mode: releasedbg, qt: clang_64 }
@@ -41,18 +41,10 @@ jobs:
       with:
         version: '5.15.2'
         target: 'desktop'
-        arch: ${{ matrix.config.qt }}
+        arch: ${{ matrix.config.qt_arch }}
         cache: 'true'
         setup-python: 'false'
-        archives: 'qtbase qtdeclarative'
-    
-    - name: Set QT env (Linux)
-      if: runner.os == 'Linux'
-      shell: bash
-      run: |
-        echo "$GITHUB_PATH"
-        echo "$Qt5_Dir/bin" >> $GITHUB_PATH
-        echo "$GITHUB_PATH"
+        archives: ${{ matrix.config.qt_archive }}
 
     # Force xmake to a specific folder (for cache)
     - name: Set xmake env (Linux)
@@ -80,6 +72,7 @@ jobs:
     - name: Install package
       run: |
         xmake require -y
+        ls ${{ runner.workspace }}
 
     - name: Save cache
       uses: actions/cache/save@v3
@@ -87,41 +80,35 @@ jobs:
         path: ${{ env.XMAKE_GLOBALDIR }}\.xmake\packages
         key: x-studio-cache-package-${{ matrix.config.arch }}-${{ matrix.config.os }}
 
-    - name: Configure xmake and install dependencies
-      run: xmake config --arch=${{ matrix.config.arch }} --mode=${{ matrix.config.mode }} --ccache=n
+    # - name: Configure xmake and install dependencies
+    #   run: xmake config --arch=${{ matrix.config.arch }} --mode=${{ matrix.config.mode }} --ccache=n
 
-    - name: Qt Link Dir
-      run: |
-        ls ${{ env.LD_LIBRARY_PATH }}
+    # - name: Build
+    #   run: |
+    #     xmake build X-Studio
+    #     xmake build FileIOPlugin
 
-        xmake f --linkdirs="${{ env.LD_LIBRARY_PATH }}"
+    # - name: Package
+    #   run: |
+    #     xmake package PACKAGE_ALL
 
-    - name: Build
-      run: |
-        xmake build X-Studio
-        xmake build FileIOPlugin
+    # - name: Archive and upload artifact
+    #   shell: bash
+    #   run: |
+    #     tar -C ./package -zcvf X-Studio-${{ matrix.config.os }}-${{ matrix.config.arch }}-${{ matrix.config.mode }}.tar.gz .
+    #     if [ "$RUNNER_OS" == "macOS" ]; then
+    #       shasum -a 256 X-Studio-${{ matrix.config.os }}-${{ matrix.config.arch }}-${{ matrix.config.mode }}.tar.gz > SHA256SUM
+    #     else
+    #       sha256sum X-Studio-${{ matrix.config.os }}-${{ matrix.config.arch }}-${{ matrix.config.mode }}.tar.gz > SHA256SUM
+    #     fi
 
-    - name: Package
-      run: |
-        xmake package PACKAGE_ALL
-
-    - name: Archive and upload artifact
-      shell: bash
-      run: |
-        tar -C ./package -zcvf X-Studio-${{ matrix.config.os }}-${{ matrix.config.arch }}-${{ matrix.config.mode }}.tar.gz .
-        if [ "$RUNNER_OS" == "macOS" ]; then
-          shasum -a 256 X-Studio-${{ matrix.config.os }}-${{ matrix.config.arch }}-${{ matrix.config.mode }}.tar.gz > SHA256SUM
-        else
-          sha256sum X-Studio-${{ matrix.config.os }}-${{ matrix.config.arch }}-${{ matrix.config.mode }}.tar.gz > SHA256SUM
-        fi
-
-    - name: Release
-      uses: softprops/action-gh-release@v1
-      with:
-        files: X-Studio-${{ matrix.config.os }}-${{ matrix.config.arch }}-${{ matrix.config.mode }}.tar.gz
-        token: ${{ secrets.XSTUDIOPACKAGES_PUBLISH_TOKEN }}
-        name: ${{ github.event.inputs.name }}
-        tag_name: ${{ github.event.inputs.name }}
-        append_body: true
-        body_path: SHA256SUM
-        repository: ZJUDMAL/XStudioPackages
+    # - name: Release
+    #   uses: softprops/action-gh-release@v1
+    #   with:
+    #     files: X-Studio-${{ matrix.config.os }}-${{ matrix.config.arch }}-${{ matrix.config.mode }}.tar.gz
+    #     token: ${{ secrets.XSTUDIOPACKAGES_PUBLISH_TOKEN }}
+    #     name: ${{ github.event.inputs.name }}
+    #     tag_name: ${{ github.event.inputs.name }}
+    #     append_body: true
+    #     body_path: SHA256SUM
+    #     repository: ZJUDMAL/XStudioPackages

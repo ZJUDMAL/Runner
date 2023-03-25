@@ -43,11 +43,11 @@ jobs:
         arch: ${{ matrix.config.qt }}
         cache: 'true'
         setup-python: 'false'
-        archives: 'qtbase qtdeclarative'
+        archives: 'qtbase qtdeclarative qttools'
     
     # Force xmake to a specific folder (for cache)
-    - name: Set xmake env (Linux)
-      if: runner.os == 'Linux'
+    - name: Set xmake env (Linux / MacOS)
+      if: ${{ (runner.os == 'Linux') || (runner.os == 'macOS') }}
       run: echo "XMAKE_GLOBALDIR=${{ runner.workspace }}/xmake-global" >> $GITHUB_ENV
 
     - name: Set xmake env (Windows)
@@ -78,35 +78,35 @@ jobs:
         path: ${{ env.XMAKE_GLOBALDIR }}\.xmake\packages
         key: x-studio-cache-package-${{ matrix.config.arch }}-${{ matrix.config.os }}
 
-    - name: Configure xmake and install dependencies
-      run: xmake config --arch=${{ matrix.config.arch }} --mode=${{ matrix.config.mode }} --ccache=n
+    # - name: Configure xmake and install dependencies
+    #   run: xmake config --arch=${{ matrix.config.arch }} --mode=${{ matrix.config.mode }} --ccache=n
 
-    - name: Build
-      run: |
-        xmake build X-Studio
-        xmake build FileIOPlugin
+    # - name: Build
+    #   run: |
+    #     xmake build X-Studio
+    #     xmake build FileIOPlugin
 
-    - name: Package
-      run: |
-        xmake package PACKAGE_ALL
+    # - name: Package
+    #   run: |
+    #     xmake package PACKAGE_ALL
 
-    - name: Archive and upload artifact
-      run: |
-        tar -C ./package -zcvf X-Studio-${{ matrix.config.os }}-${{ matrix.config.arch }}-${{ matrix.config.mode }}.tar.gz .
-        if [ "$RUNNER_OS" == "macOS" ]; then
-          shasum -a 256 X-Studio-${{ matrix.config.os }}-${{ matrix.config.arch }}-${{ matrix.config.mode }}.tar.gz > SHA256SUM
-        else
-          sha256sum X-Studio-${{ matrix.config.os }}-${{ matrix.config.arch }}-${{ matrix.config.mode }}.tar.gz > SHA256SUM
-        fi
-      shell: bash
+    # - name: Archive and upload artifact
+    #   run: |
+    #     tar -C ./package -zcvf X-Studio-${{ matrix.config.os }}-${{ matrix.config.arch }}-${{ matrix.config.mode }}.tar.gz .
+    #     if [ "$RUNNER_OS" == "macOS" ]; then
+    #       shasum -a 256 X-Studio-${{ matrix.config.os }}-${{ matrix.config.arch }}-${{ matrix.config.mode }}.tar.gz > SHA256SUM
+    #     else
+    #       sha256sum X-Studio-${{ matrix.config.os }}-${{ matrix.config.arch }}-${{ matrix.config.mode }}.tar.gz > SHA256SUM
+    #     fi
+    #   shell: bash
 
-    - name: Release
-      uses: softprops/action-gh-release@v1
-      with:
-        files: X-Studio-${{ matrix.config.os }}-${{ matrix.config.arch }}-${{ matrix.config.mode }}.tar.gz
-        token: ${{ secrets.XSTUDIOPACKAGES_PUBLISH_TOKEN }}
-        name: ${{ github.event.inputs.name }}
-        tag_name: ${{ github.event.inputs.name }}
-        append_body: true
-        body_path: SHA256SUM
-        repository: ZJUDMAL/XStudioPackages
+    # - name: Release
+    #   uses: softprops/action-gh-release@v1
+    #   with:
+    #     files: X-Studio-${{ matrix.config.os }}-${{ matrix.config.arch }}-${{ matrix.config.mode }}.tar.gz
+    #     token: ${{ secrets.XSTUDIOPACKAGES_PUBLISH_TOKEN }}
+    #     name: ${{ github.event.inputs.name }}
+    #     tag_name: ${{ github.event.inputs.name }}
+    #     append_body: true
+    #     body_path: SHA256SUM
+    #     repository: ZJUDMAL/XStudioPackages
