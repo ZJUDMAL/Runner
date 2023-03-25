@@ -43,7 +43,7 @@ jobs:
         target: 'desktop'
         arch: ${{ matrix.config.qt }}
         cache: 'true'
-        setup-python: 'false'
+        set-env: 'true'
         archives: 'qtbase qtdeclarative'
     
     # Force xmake to a specific folder (for cache)
