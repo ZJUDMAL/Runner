@@ -49,8 +49,9 @@ jobs:
     - name: Set QT env (Linux)
       if: runner.os == 'Linux'
       run: |
-        echo "$Qt5_Dir/bin" >> $GITHUB_ENV
-        echo "$GITHUB_ENV"
+        echo "$GITHUB_PATH"
+        echo "$Qt5_Dir/bin" >> $GITHUB_PATH
+        echo "$GITHUB_PATH"
 
     # Force xmake to a specific folder (for cache)
     - name: Set xmake env (Linux)
