@@ -50,14 +50,13 @@ jobs:
       if: runner.os == 'Linux'
       shell: bash
       run: |
-        echo "$PATH"
+        echo "$GITHUB_PATH"
         echo "$Qt5_Dir/bin" >> $GITHUB_PATH
-        echo "$PATH"
+        echo "$GITHUB_PATH"
 
     # Force xmake to a specific folder (for cache)
     - name: Set xmake env (Linux)
       if: runner.os == 'Linux'
-      shell: bash
       run: echo "XMAKE_GLOBALDIR=${{ runner.workspace }}/xmake-global" >> $GITHUB_ENV
 
     - name: Set xmake env (Windows)
@@ -78,7 +77,6 @@ jobs:
         key: x-studio-cache-package-${{ matrix.config.arch }}-${{ matrix.config.os }}
 
     - name: Install package
-      shell: bash
       run: |
         xmake require -y
 
@@ -89,11 +87,13 @@ jobs:
         key: x-studio-cache-package-${{ matrix.config.arch }}-${{ matrix.config.os }}
 
     - name: Configure xmake and install dependencies
-      shell: bash
       run: xmake config --arch=${{ matrix.config.arch }} --mode=${{ matrix.config.mode }} --ccache=n
 
+    - name: Qt Link Dir
+      run: |
+        xmake f --linkdirs="$LD_LIBRARY_PATH"
+
     - name: Build
-      shell: bash
       run: |
         xmake build X-Studio
         xmake build FileIOPlugin
