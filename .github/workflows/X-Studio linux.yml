@@ -70,7 +70,8 @@ jobs:
     - name: Install package
       run: |
         xmake repo -u
-        xmake require -y
+        xmake require --info glu
+        xmake require -y -v
 
     - name: Save cache
       uses: actions/cache/save@v3
