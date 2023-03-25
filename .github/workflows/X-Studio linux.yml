@@ -43,7 +43,7 @@ jobs:
         arch: ${{ matrix.config.qt }}
         cache: 'true'
         setup-python: 'false'
-        archives: 'qtbase'
+        archives: 'qtbase qtscxml'
     
     # Force xmake to a specific folder (for cache)
     - name: Set xmake env (Linux)
@@ -67,10 +67,13 @@ jobs:
         path: ${{ env.XMAKE_GLOBALDIR }}\.xmake\packages
         key: x-studio-cache-package-${{ matrix.config.arch }}-${{ matrix.config.os }}
 
-    - name: Install package
+    - name: Test
       run: |
         xmake repo -u
-        xmake require --info glu
+        xmake require glu
+
+    - name: Install package
+      run: |
         xmake require -y -v
 
     - name: Save cache
