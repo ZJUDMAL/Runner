@@ -43,9 +43,13 @@ jobs:
         target: 'desktop'
         arch: ${{ matrix.config.qt }}
         cache: 'true'
-        set-env: 'true'
+        setup-python: 'false'
         archives: 'qtbase qtdeclarative'
     
+    - name: Set QT env (Linux)
+      if: runner.os == 'Linux'
+      run: echo "$GITHUB_ENV"
+
     # Force xmake to a specific folder (for cache)
     - name: Set xmake env (Linux)
       if: runner.os == 'Linux'
