@@ -29,6 +29,7 @@ jobs:
       if: runner.os == 'Linux'
       run: |
         sudo apt-get update
+        sudo apt-get -y install mesa-common-dev libglu1-mesa-dev
 
     - uses: actions/checkout@v3
       with:
