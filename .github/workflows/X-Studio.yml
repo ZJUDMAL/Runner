@@ -93,11 +93,12 @@ jobs:
 
     - name: Check cache whether need update
       if: ${{ (steps.XMAKE_PACKAGE_HASH_OLD.outputs.hash != steps.XMAKE_PACKAGE_HASH.outputs.hash) || (steps.XMAKE_PACKAGE_HASH_OLD.outputs.hash != steps.XMAKE_PACKAGE_HASH.outputs.hash) }}
-      run: |
-          curl -L \
-          -X DELETE \
-          -H "Accept: application/vnd.github+json" \
-          -H "Authorization: token  ${{ secrets.RUNNER_ACTION_TOKEN }}"\
+      shell: bash
+      run: >
+          curl -L
+          -X DELETE
+          -H "Accept: application/vnd.github+json"
+          -H "Authorization: token  ${{ secrets.RUNNER_ACTION_TOKEN }}"
           https://api.github.com/repos/ZJUDMAL/Runner/actions/caches?key=x-studio-cache-package-${{ matrix.config.arch }}-${{ matrix.config.os }}
 
     - name: Save cache (Linux MacOS)
