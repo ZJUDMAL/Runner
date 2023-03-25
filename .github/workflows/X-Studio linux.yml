@@ -68,14 +68,9 @@ jobs:
         path: ${{ env.XMAKE_GLOBALDIR }}\.xmake\packages
         key: x-studio-cache-package-${{ matrix.config.arch }}-${{ matrix.config.os }}
 
-    - name: Test
-      run: |
-        xmake repo -u
-        xmake require glu
-
     - name: Install package
       run: |
-        xmake require -y -v
+        xmake require -y
 
     - name: Save cache
       uses: actions/cache/save@v3
