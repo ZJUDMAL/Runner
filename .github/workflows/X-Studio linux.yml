@@ -91,7 +91,7 @@ jobs:
 
     - name: Qt Link Dir
       run: |
-        xmake f --linkdirs="$LD_LIBRARY_PATH"
+        xmake f --linkdirs=" ${{ env.LD_LIBRARY_PATH }}"
 
     - name: Build
       run: |
