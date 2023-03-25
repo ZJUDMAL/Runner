@@ -71,6 +71,7 @@ jobs:
       run: |
         xmake repo -u
         xmake require -y
+        xmake show -l envs
 
     - name: Save cache
       uses: actions/cache/save@v3

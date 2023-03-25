@@ -72,7 +72,7 @@ jobs:
     - name: Install package
       run: |
         xmake require -y
-        ls ${{ runner.workspace }}
+        xmake show -l envs
 
     - name: Save cache
       uses: actions/cache/save@v3
