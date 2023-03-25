@@ -48,6 +48,7 @@ jobs:
     
     - name: Set QT env (Linux)
       if: runner.os == 'Linux'
+      shell: bash
       run: |
         echo "$GITHUB_PATH"
         echo "$Qt5_Dir/bin" >> $GITHUB_PATH
@@ -90,13 +91,15 @@ jobs:
 
     - name: Build
       run: |
-        xmake build BUILD_ALL
+        xmake build X-Studio
+        xmake build FileIOPlugin
 
     - name: Package
       run: |
-        xmake package BUILD_ALL
+        xmake package PACKAGE_ALL
 
     - name: Archive and upload artifact
+      shell: bash
       run: |
         tar -C ./package -zcvf X-Studio-${{ matrix.config.os }}-${{ matrix.config.arch }}-${{ matrix.config.mode }}.tar.gz .
         if [ "$RUNNER_OS" == "macOS" ]; then
@@ -104,7 +107,6 @@ jobs:
         else
           sha256sum X-Studio-${{ matrix.config.os }}-${{ matrix.config.arch }}-${{ matrix.config.mode }}.tar.gz > SHA256SUM
         fi
-      shell: bash
 
     - name: Release
       uses: softprops/action-gh-release@v1

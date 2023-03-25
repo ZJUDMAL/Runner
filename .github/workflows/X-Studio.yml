@@ -77,19 +77,23 @@ jobs:
       with:
         path: ${{ env.XMAKE_GLOBALDIR }}\.xmake\packages
         key: x-studio-cache-package-${{ matrix.config.arch }}-${{ matrix.config.os }}
+    
+    # Add logical to update cache
 
     - name: Configure xmake and install dependencies
       run: xmake config --arch=${{ matrix.config.arch }} --mode=${{ matrix.config.mode }} --ccache=n
 
     - name: Build
       run: |
-        xmake build BUILD_ALL
+        xmake build X-Studio
+        xmake build FileIOPlugin
 
     - name: Package
       run: |
-        xmake package BUILD_ALL
+        xmake package PACKAGE_ALL
 
     - name: Archive and upload artifact
+      shell: bash
       run: |
         tar -C ./package -zcvf X-Studio-${{ matrix.config.os }}-${{ matrix.config.arch }}-${{ matrix.config.mode }}.tar.gz .
         if [ "$RUNNER_OS" == "macOS" ]; then
@@ -97,7 +101,6 @@ jobs:
         else
           sha256sum X-Studio-${{ matrix.config.os }}-${{ matrix.config.arch }}-${{ matrix.config.mode }}.tar.gz > SHA256SUM
         fi
-      shell: bash
 
     - name: Release
       uses: softprops/action-gh-release@v1

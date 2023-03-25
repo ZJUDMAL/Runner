@@ -83,11 +83,12 @@ jobs:
 
     - name: Build
       run: |
-        xmake build BUILD_ALL
+        xmake build X-Studio
+        xmake build FileIOPlugin
 
     - name: Package
       run: |
-        xmake package BUILD_ALL
+        xmake package PACKAGE_ALL
 
     - name: Archive and upload artifact
       run: |
