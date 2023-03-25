@@ -69,6 +69,7 @@ jobs:
 
     - name: Install package
       run: |
+        xmake repo -u
         xmake require -y
 
     - name: Save cache

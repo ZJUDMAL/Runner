@@ -1,4 +1,4 @@
-name: X-Studio
+name: X-Studio Linux
 
 on:
   workflow_dispatch:
@@ -14,10 +14,10 @@ jobs:
     strategy:
       matrix:
         config:
-        - { name: "Windows x64 debug", os: windows-latest, arch: x64, mode: debug, qt: win64_msvc2019_64 }
-        # - { name: "Windows x64 releasedbg", os: windows-latest, arch: x64, mode: releasedbg, qt: win64_msvc2019_64 }
-        # - { name: "Ubuntu x86_64 debug", os: ubuntu-latest, arch: x86_64, mode: debug, qt: gcc_64  }
-        # - { name: "Ubuntu x86_64 releasedbg", os: ubuntu-latest, arch: x86_64, mode: releasedbg, qt: gcc_64 }
+        # - { name: "Windows x64 debug", os: windows-latest, arch: x64, mode: debug, qt: win64_msvc2019_64 }
+        #- { name: "Windows x64 releasedbg", os: windows-latest, arch: x64, mode: releasedbg, qt: win64_msvc2019_64 }
+        - { name: "Ubuntu x86_64 debug", os: ubuntu-latest, arch: x86_64, mode: debug, qt: gcc_64  }
+        #- { name: "Ubuntu x86_64 releasedbg", os: ubuntu-latest, arch: x86_64, mode: releasedbg, qt: gcc_64 }
         # - { name: "MacOS x86_64 debug", os: macOS-latest, arch: x86_64, mode: debug, qt: clang_64 }
         #- { name: "MacOS x86_64 releasedbg", os: macOS-latest, arch: x86_64, mode: releasedbg, qt: clang_64 }
 
