@@ -61,7 +61,15 @@ jobs:
         # xmake-cache-${actionsCacheKey}-${ver}-${sha}-${os.arch()}-${os.platform()}-${process.env.RUNNER_OS}
         actions-cache-key: base
     
-    - name: Restore cache
+    - name: Restore cache (Linux MacOS)
+      if: ${{ (runner.os == 'Linux') || (runner.os == 'macOS') }}
+      uses: actions/cache/restore@v3
+      with:
+        path: ${{ env.XMAKE_GLOBALDIR }}/.xmake/packages
+        key: x-studio-cache-package-${{ matrix.config.arch }}-${{ matrix.config.os }}
+
+    - name: Restore cache (Windows)
+      if: runner.os == 'Windows'
       uses: actions/cache/restore@v3
       with:
         path: ${{ env.XMAKE_GLOBALDIR }}\.xmake\packages
@@ -73,7 +81,15 @@ jobs:
         xmake require -y
         xmake show -l envs
 
-    - name: Save cache
+    - name: Save cache (Linux MacOS)
+      if: ${{ (runner.os == 'Linux') || (runner.os == 'macOS') }}
+      uses: actions/cache/save@v3
+      with:
+        path: ${{ env.XMAKE_GLOBALDIR }}/.xmake/packages
+        key: x-studio-cache-package-${{ matrix.config.arch }}-${{ matrix.config.os }}
+
+    - name: Save cache (Windows)
+      if: runner.os == 'Windows'
       uses: actions/cache/save@v3
       with:
         path: ${{ env.XMAKE_GLOBALDIR }}\.xmake\packages
