@@ -76,12 +76,12 @@ jobs:
         key: x-studio-cache-package-${{ matrix.config.arch }}-${{ matrix.config.os }}
 
     # Fetch xmake dephash
-    - name: Retrieve dependencies hash
+    - name: Retrieve dependencies hash (Linux MacOS)
       if: ${{ (runner.os == 'Linux') || (runner.os == 'macOS') }}
       id: XMAKE_PACKAGE_HASH
       run: echo "unix=$(xmake l utils.ci.packageskey)" >> $GITHUB_OUTPUT
 
-    - name: Retrieve dependencies hash
+    - name: Retrieve dependencies hash (Windows)
       if: runner.os == 'Windows'
       id: XMAKE_PACKAGE_HASH
       run: echo "windows=$(xmake l utils.ci.packageskey)" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
@@ -92,7 +92,7 @@ jobs:
         xmake require -y
 
     - name: Check cache whether need update
-      if: ${{ (XMAKE_PACKAGE_HASH.outputs.unix != $(xmake l utils.ci.packageskey)) || (XMAKE_PACKAGE_HASH.outputs.windows != $(xmake l utils.ci.packageskey)) }}
+      if: ${{ (steps.XMAKE_PACKAGE_HASH.outputs.unix != $(xmake l utils.ci.packageskey)) || (steps.XMAKE_PACKAGE_HASH.outputs.windows != $(xmake l utils.ci.packageskey)) }}
       run: |
           curl -L \
           -X DELETE \
@@ -101,14 +101,14 @@ jobs:
           https://api.github.com/repos/ZJUDMAL/Runner/actions/caches?key=x-studio-cache-package-${{ matrix.config.arch }}-${{ matrix.config.os }}
 
     - name: Save cache (Linux MacOS)
-      if: ${{ (XMAKE_PACKAGE_HASH.outputs.unix != $(xmake l utils.ci.packageskey)) && (runner.os == 'Linux') || (runner.os == 'macOS') }}
+      if: ${{ (steps.XMAKE_PACKAGE_HASH.outputs.unix != $(xmake l utils.ci.packageskey)) && (runner.os == 'Linux') || (runner.os == 'macOS') }}
       uses: actions/cache/save@v3
       with:
         path: ${{ env.XMAKE_GLOBALDIR }}/.xmake/packages
         key: x-studio-cache-package-${{ matrix.config.arch }}-${{ matrix.config.os }}
 
     - name: Save cache (Windows)
-      if: ${{ (XMAKE_PACKAGE_HASH.outputs.windows != $(xmake l utils.ci.packageskey)) && runner.os == 'Windows' }}
+      if: ${{ (steps.XMAKE_PACKAGE_HASH.outputs.windows != $(xmake l utils.ci.packageskey)) && runner.os == 'Windows' }}
       uses: actions/cache/save@v3
       with:
         path: ${{ env.XMAKE_GLOBALDIR }}\.xmake\packages
