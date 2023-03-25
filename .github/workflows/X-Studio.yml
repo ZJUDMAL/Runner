@@ -76,33 +76,23 @@ jobs:
         key: x-studio-cache-package-${{ matrix.config.arch }}-${{ matrix.config.os }}
 
     # Fetch xmake dephash
-    - name: Retrieve dependencies hash (Linux MacOS)
-      if: ${{ (runner.os == 'Linux') || (runner.os == 'macOS') }}
+    - name: Retrieve dependencies hash
+      shell: bash
       id: XMAKE_PACKAGE_HASH_OLD
-      run: echo "unix=$(xmake l utils.ci.packageskey)" >> $GITHUB_OUTPUT
-
-    - name: Retrieve dependencies hash (Windows)
-      if: runner.os == 'Windows'
-      id: XMAKE_PACKAGE_HASH_OLD
-      run: echo "windows=$(xmake l utils.ci.packageskey)" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+      run: echo "hash=$(xmake l utils.ci.packageskey)" >> $GITHUB_OUTPUT
 
     - name: Install package
       run: |
         xmake repo -u
         xmake require -y
 
-    - name: Retrieve dependencies hash (Linux MacOS)
-      if: ${{ (runner.os == 'Linux') || (runner.os == 'macOS') }}
+    - name: Retrieve dependencies hash
       id: XMAKE_PACKAGE_HASH
-      run: echo "unix=$(xmake l utils.ci.packageskey)" >> $GITHUB_OUTPUT
-
-    - name: Retrieve dependencies hash (Windows)
-      if: runner.os == 'Windows'
-      id: XMAKE_PACKAGE_HASH
-      run: echo "windows=$(xmake l utils.ci.packageskey)" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+      shell: bash
+      run: echo "hash=$(xmake l utils.ci.packageskey)" >> $GITHUB_OUTPUT
 
     - name: Check cache whether need update
-      if: ${{ (steps.XMAKE_PACKAGE_HASH_OLD.outputs.unix != steps.XMAKE_PACKAGE_HASH.outputs.unix) || (steps.XMAKE_PACKAGE_HASH_OLD.outputs.windows != steps.XMAKE_PACKAGE_HASH.outputs.windows) }}
+      if: ${{ (steps.XMAKE_PACKAGE_HASH_OLD.outputs.hash != steps.XMAKE_PACKAGE_HASH.outputs.hash) || (steps.XMAKE_PACKAGE_HASH_OLD.outputs.hash != steps.XMAKE_PACKAGE_HASH.outputs.hash) }}
       run: |
           curl -L \
           -X DELETE \
@@ -111,14 +101,14 @@ jobs:
           https://api.github.com/repos/ZJUDMAL/Runner/actions/caches?key=x-studio-cache-package-${{ matrix.config.arch }}-${{ matrix.config.os }}
 
     - name: Save cache (Linux MacOS)
-      if: ${{ (steps.XMAKE_PACKAGE_HASH_OLD.outputs.unix != steps.XMAKE_PACKAGE_HASH.outputs.unix) && (runner.os == 'Linux') || (runner.os == 'macOS') }}
+      if: ${{ (steps.XMAKE_PACKAGE_HASH_OLD.outputs.hash != steps.XMAKE_PACKAGE_HASH.outputs.hash) && (runner.os == 'Linux') || (runner.os == 'macOS') }}
       uses: actions/cache/save@v3
       with:
         path: ${{ env.XMAKE_GLOBALDIR }}/.xmake/packages
         key: x-studio-cache-package-${{ matrix.config.arch }}-${{ matrix.config.os }}
 
     - name: Save cache (Windows)
-      if: ${{ (steps.XMAKE_PACKAGE_HASH_OLD.outputs.windows != steps.XMAKE_PACKAGE_HASH.outputs.windows) && runner.os == 'Windows' }}
+      if: ${{ (steps.XMAKE_PACKAGE_HASH_OLD.outputs.hash != steps.XMAKE_PACKAGE_HASH.outputs.hash) && runner.os == 'Windows' }}
       uses: actions/cache/save@v3
       with:
         path: ${{ env.XMAKE_GLOBALDIR }}\.xmake\packages
