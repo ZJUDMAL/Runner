@@ -50,9 +50,9 @@ jobs:
       if: runner.os == 'Linux'
       shell: bash
       run: |
-        echo "$GITHUB_PATH"
+        echo "$PATH"
         echo "$Qt5_Dir/bin" >> $GITHUB_PATH
-        echo "$GITHUB_PATH"
+        echo "$PATH"
 
     # Force xmake to a specific folder (for cache)
     - name: Set xmake env (Linux)
