@@ -39,8 +39,7 @@ jobs:
     - name: Archive and upload artifact
       shell: bash
       run: |
-        cd ${{ runner.workspace }}
-        tar -zcvf Qt-${{ matrix.config.os }}-${{ matrix.config.arch }}-${{ matrix.config.mode }}.tar.gz Qt
+        tar -C $RUNNER_WORKSPACE -zcvf Qt-${{ matrix.config.os }}-${{ matrix.config.arch }}-${{ matrix.config.mode }}.tar.gz Qt
         if [ "$RUNNER_OS" == "macOS" ]; then
           shasum -a 256 Qt-${{ matrix.config.os }}-${{ matrix.config.arch }}-${{ matrix.config.mode }}.tar.gz > SHA256SUM
         else
