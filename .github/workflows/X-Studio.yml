@@ -36,6 +36,12 @@ jobs:
         repository: 'ZJUDMAL/X-Studio'
         token: ${{ secrets.XSTUDIOPACKAGES_PUBLISH_TOKEN }}
 
+    - uses: actions/checkout@v3
+      with:
+        repository: 'ZJUDMAL/XStudioPackages'
+        token: ${{ secrets.XSTUDIOPACKAGES_PUBLISH_TOKEN }}
+        path: 'XStudioPackages'
+
     - name: Install Qt
       uses: jurplel/install-qt-action@v3
       with:
