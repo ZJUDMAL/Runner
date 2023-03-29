@@ -14,9 +14,9 @@ jobs:
     strategy:
       matrix:
         config:
-        - { name: "Windows x64 debug", os: windows-latest, arch: x64, mode: debug, qt_arch: win64_msvc2019_64, qt_archive: 'qtbase qtdeclarative' }
+        # - { name: "Windows x64 debug", os: windows-latest, arch: x64, mode: debug, qt_arch: win64_msvc2019_64, qt_archive: 'qtbase qtdeclarative' }
         # - { name: "Windows x64 releasedbg", os: windows-latest, arch: x64, mode: releasedbg, qt_arch: win64_msvc2019_64, qt_archive: 'qtbase qtdeclarative' }
-        - { name: "Ubuntu x86_64 debug", os: ubuntu-latest, arch: x86_64, mode: debug, qt_arch: gcc_64, qt_archive: 'qtbase qtdeclarative icu' }
+        # - { name: "Ubuntu x86_64 debug", os: ubuntu-latest, arch: x86_64, mode: debug, qt_arch: gcc_64, qt_archive: 'qtbase qtdeclarative icu' }
         # - { name: "Ubuntu x86_64 releasedbg", os: ubuntu-latest, arch: x86_64, mode: releasedbg, qt_arch: gcc_64, qt_archive: 'qtbase qtdeclarative icu' }
         - { name: "MacOS x86_64 debug", os: macOS-latest, arch: x86_64, mode: debug, qt_arch: clang_64, qt_archive: 'qtbase qtdeclarative qttools' }
         #- { name: "MacOS x86_64 releasedbg", os: macOS-latest, arch: x86_64, mode: releasedbg, qt_arch: clang_64, qt_archive: 'qtbase qtdeclarative qttools' }
