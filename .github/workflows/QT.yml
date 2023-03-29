@@ -2,10 +2,6 @@ name: Qt
 
 on:
   workflow_dispatch:
-    inputs:
-      name:
-        description: Release version name
-        required: true
 
 run-name: ${{ github.event.inputs.name }}
 
@@ -39,20 +35,20 @@ jobs:
     - name: Archive and upload artifact
       shell: bash
       run: |
-        tar -C $RUNNER_WORKSPACE -zcvf Qt-${{ matrix.config.os }}-${{ matrix.config.arch }}-${{ matrix.config.mode }}.tar.gz Qt
+        tar -C $RUNNER_WORKSPACE -zcvf Qt-${{ matrix.config.os }}-${{ matrix.config.arch }}.tar.gz Qt
         if [ "$RUNNER_OS" == "macOS" ]; then
-          shasum -a 256 Qt-${{ matrix.config.os }}-${{ matrix.config.arch }}-${{ matrix.config.mode }}.tar.gz > SHA256SUM
+          shasum -a 256 Qt-${{ matrix.config.os }}-${{ matrix.config.arch }}.tar.gz > SHA256SUM
         else
-          sha256sum Qt-${{ matrix.config.os }}-${{ matrix.config.arch }}-${{ matrix.config.mode }}.tar.gz > SHA256SUM
+          sha256sum Qt-${{ matrix.config.os }}-${{ matrix.config.arch }}.tar.gz > SHA256SUM
         fi
 
     - name: Release
       uses: softprops/action-gh-release@v1
       with:
-        files: Qt-${{ matrix.config.os }}-${{ matrix.config.arch }}-${{ matrix.config.mode }}.tar.gz
+        files: Qt-${{ matrix.config.os }}-${{ matrix.config.arch }}.tar.gz
         token: ${{ secrets.XSTUDIOPACKAGES_PUBLISH_TOKEN }}
-        name: ${{ github.event.inputs.name }}
-        tag_name: ${{ github.event.inputs.name }}
+        name: Qt
+        tag_name: Qt
         append_body: true
         body_path: SHA256SUM
         repository: ZJUDMAL/XStudioPackages
