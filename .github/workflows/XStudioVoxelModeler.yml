@@ -1,0 +1,75 @@
+name: XStudioVoxelModeler
+
+on:
+  workflow_dispatch:
+    inputs:
+      name:
+        description: Release version name
+        required: true
+
+run-name: ${{ github.event.inputs.name }}
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        config:
+        - { name: "Windows x64 debug", os: windows-latest, arch: x64, mode: debug }
+        - { name: "Windows x64 releasedbg", os: windows-latest, arch: x64, mode: releasedbg }
+        - { name: "Ubuntu x86_64 debug", os: ubuntu-latest, arch: x86_64, mode: debug }
+        - { name: "Ubuntu x86_64 releasedbg", os: ubuntu-latest, arch: x86_64, mode: releasedbg }
+        - { name: "MacOS x86_64 debug", os: macOS-latest, arch: x86_64, mode: debug }
+        - { name: "MacOS x86_64 releasedbg", os: macOS-latest, arch: x86_64, mode: releasedbg }
+
+    name: ${{ matrix.config.name }}
+    runs-on: ${{ matrix.config.os }}
+
+    steps:
+    - name: Install system dependencies
+      if: runner.os == 'Linux'
+      run: |
+        sudo apt-get update
+
+    - uses: actions/checkout@v3
+      with:
+        repository: 'ZJUDMAL/XStudioVoxelModeler'
+        token: ${{ secrets.XSTUDIOPACKAGES_PUBLISH_TOKEN }}
+
+    - uses: xmake-io/github-action-setup-xmake@v1
+      with:
+        xmake-version: latest
+        actions-cache-folder: '.xmake-cache'
+        # xmake-cache-${actionsCacheKey}-${ver}-${sha}-${os.arch()}-${os.platform()}-${process.env.RUNNER_OS}
+        actions-cache-key: base
+    
+    - name: Configure xmake and install dependencies
+      run: xmake config --arch=${{ matrix.config.arch }} --mode=${{ matrix.config.mode }} --ccache=n -y
+
+    - name: Build
+      run: |
+        xmake build BUILD_ALL
+
+    - name: Package
+      run: |
+        xmake package BUILD_ALL
+
+    - name: Archive and upload artifact
+      run: |
+        tar -C ./package -zcvf XStudioVoxelModeler-${{ matrix.config.os }}-${{ matrix.config.arch }}-${{ matrix.config.mode }}.tar.gz .
+        if [ "$RUNNER_OS" == "macOS" ]; then
+          shasum -a 256 XStudioVoxelModeler-${{ matrix.config.os }}-${{ matrix.config.arch }}-${{ matrix.config.mode }}.tar.gz > SHA256SUM
+        else
+          sha256sum XStudioVoxelModeler-${{ matrix.config.os }}-${{ matrix.config.arch }}-${{ matrix.config.mode }}.tar.gz > SHA256SUM
+        fi
+      shell: bash
+
+    - name: Release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: XStudioVoxelModeler-${{ matrix.config.os }}-${{ matrix.config.arch }}-${{ matrix.config.mode }}.tar.gz
+        token: ${{ secrets.XSTUDIOPACKAGES_PUBLISH_TOKEN }}
+        name: ${{ github.event.inputs.name }}
+        tag_name: ${{ github.event.inputs.name }}
+        append_body: true
+        body_path: SHA256SUM
+        repository: ZJUDMAL/XStudioPackages
