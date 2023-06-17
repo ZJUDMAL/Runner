@@ -63,7 +63,7 @@ jobs:
 
     - uses: xmake-io/github-action-setup-xmake@v1
       with:
-        xmake-version: latest
+        xmake-version: '2.7.8'
         actions-cache-folder: '.xmake-cache'
         # xmake-cache-${actionsCacheKey}-${ver}-${sha}-${os.arch()}-${os.platform()}-${process.env.RUNNER_OS}
         actions-cache-key: base
