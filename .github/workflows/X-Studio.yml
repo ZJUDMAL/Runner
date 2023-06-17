@@ -135,6 +135,8 @@ jobs:
       run: |
         xmake build X-Studio
         xmake build FileIOPlugin
+        xmake build AdvancedToolsPlugin
+        xmake build SelectionToolsPlugin
 
     - name: Package
       run: |
