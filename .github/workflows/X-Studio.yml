@@ -88,7 +88,6 @@ jobs:
       id: XMAKE_PACKAGE_HASH_OLD
       run: |
         echo "hash=$(xmake l utils.ci.packageskey)" >> $GITHUB_OUTPUT
-        echo "$steps.XMAKE_PACKAGE_HASH_OLD.outputs.hash"
 
     - name: Install package
       run: |
@@ -100,7 +99,18 @@ jobs:
       shell: bash
       run: |
         echo "hash=$(xmake l utils.ci.packageskey)" >> $GITHUB_OUTPUT
-        echo "$steps.XMAKE_PACKAGE_HASH.outputs.hash"
+      
+    - name: Echo Package Cache Status
+      id: XMAKE_PACKAGE_HASH
+      shell: bash
+      run: |
+        echo "Old Package Hash      ${{ steps.XMAKE_PACKAGE_HASH_OLD.outputs.hash }}" >> $GITHUB_STEP_SUMMARY
+        echo "Current Package Hash  ${{ steps.XMAKE_PACKAGE_HASH.outputs.hash }}" >> $GITHUB_STEP_SUMMARY
+        if [ "$steps.XMAKE_PACKAGE_HASH_OLD.outputs.hash" == "$steps.XMAKE_PACKAGE_HASH.outputs.hash" ]; then
+          echo "**No need update**" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "**Need update**" >> $GITHUB_STEP_SUMMARY
+        fi
 
     - name: Check cache whether need update
       if: ${{ (steps.XMAKE_PACKAGE_HASH_OLD.outputs.hash != steps.XMAKE_PACKAGE_HASH.outputs.hash) || (steps.XMAKE_PACKAGE_HASH_OLD.outputs.hash != steps.XMAKE_PACKAGE_HASH.outputs.hash) }}
@@ -151,7 +161,9 @@ jobs:
         else
           sha256sum X-Studio-${{ matrix.config.os }}-${{ matrix.config.arch }}-${{ matrix.config.mode }}.tar.gz > SHA256SUM
         fi
-        echo "$SHA256SUM"
+      
+    - name: Artifact Hash
+      run: echo "Artifact Hash ${{SHA256SUM}}" >> $GITHUB_STEP_SUMMARY
 
 
     - name: Release
