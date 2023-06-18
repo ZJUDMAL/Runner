@@ -156,9 +156,9 @@ jobs:
       run: |
         tar -C ./package -zcvf X-Studio-${{ matrix.config.os }}-${{ matrix.config.arch }}-${{ matrix.config.mode }}.tar.gz .
         if [ "$RUNNER_OS" == "macOS" ]; then
-          echo "hash=$(shasum -a 256 X-Studio-${{ matrix.config.os }}-${{ matrix.config.arch }}-${{ matrix.config.mode }}.tar.gz)" >> $GITHUB_OUTPUT
+          echo "hash=$(shasum -a 256 X-Studio-${{ matrix.config.os }}-${{ matrix.config.arch }}-${{ matrix.config.mode }}.tar.gz)\n" >> $GITHUB_OUTPUT
         else
-          echo "hash=$(sha256sum X-Studio-${{ matrix.config.os }}-${{ matrix.config.arch }}-${{ matrix.config.mode }}.tar.gz)" >> $GITHUB_OUTPUT
+          echo "hash=$(sha256sum X-Studio-${{ matrix.config.os }}-${{ matrix.config.arch }}-${{ matrix.config.mode }}.tar.gz)\n" >> $GITHUB_OUTPUT
         fi
       
     - name: Artifact Hash
