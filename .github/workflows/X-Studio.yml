@@ -169,5 +169,5 @@ jobs:
         name: ${{ github.event.inputs.name }}
         tag_name: ${{ github.event.inputs.name }}
         append_body: true
-        body_path: SHA256SUM
+        body: ${{ steps.ARTIFACT.outputs.hash }}
         repository: ZJUDMAL/XStudioPackages
