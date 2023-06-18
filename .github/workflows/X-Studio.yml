@@ -154,11 +154,12 @@ jobs:
       shell: bash
       id: ARTIFACT
       run: |
+        EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
         tar -C ./package -zcvf X-Studio-${{ matrix.config.os }}-${{ matrix.config.arch }}-${{ matrix.config.mode }}.tar.gz .
         if [ "$RUNNER_OS" == "macOS" ]; then
-          echo "hash=$(shasum -a 256 X-Studio-${{ matrix.config.os }}-${{ matrix.config.arch }}-${{ matrix.config.mode }}.tar.gz)%0A" >> $GITHUB_OUTPUT
+          echo "hash=$(shasum -a 256 X-Studio-${{ matrix.config.os }}-${{ matrix.config.arch }}-${{ matrix.config.mode }}.tar.gz)<<$EOF" >> $GITHUB_OUTPUT
         else
-          echo "hash=$(sha256sum X-Studio-${{ matrix.config.os }}-${{ matrix.config.arch }}-${{ matrix.config.mode }}.tar.gz)%0A" >> $GITHUB_OUTPUT
+          echo "hash=$(sha256sum X-Studio-${{ matrix.config.os }}-${{ matrix.config.arch }}-${{ matrix.config.mode }}.tar.gz)<<$EOF" >> $GITHUB_OUTPUT
         fi
       
     - name: Artifact Hash
