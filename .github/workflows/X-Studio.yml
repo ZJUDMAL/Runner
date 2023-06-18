@@ -101,7 +101,7 @@ jobs:
     - name: Echo Package Cache Hash
       shell: bash
       run: |
-        echo "### Package Cache Hash"
+        echo "### Package Cache Hash" >> $GITHUB_STEP_SUMMARY
         echo "**Old Package Hash**      ${{ steps.XMAKE_PACKAGE_HASH_OLD.outputs.hash }}" >> $GITHUB_STEP_SUMMARY
         echo "**Current Package Hash**  ${{ steps.XMAKE_PACKAGE_HASH.outputs.hash }}" >> $GITHUB_STEP_SUMMARY
         if [ "$steps.XMAKE_PACKAGE_HASH_OLD.outputs.hash" == "$steps.XMAKE_PACKAGE_HASH.outputs.hash" ]; then
@@ -164,7 +164,7 @@ jobs:
     - name: Artifact Hash
       shell: bash
       run: |
-      echo "### Artifact Hash"
+      echo "### Artifact Hash" >> $GITHUB_STEP_SUMMARY
       echo "Artifact Hash ${{ steps.ARTIFACT.outputs.hash }}" >> $GITHUB_STEP_SUMMARY
 
     - name: Release
