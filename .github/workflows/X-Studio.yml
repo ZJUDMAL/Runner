@@ -164,8 +164,8 @@ jobs:
     - name: Artifact Hash
       shell: bash
       run: |
-      echo "### Artifact Hash" >> $GITHUB_STEP_SUMMARY
-      echo "Artifact Hash ${{ steps.ARTIFACT.outputs.hash }}" >> $GITHUB_STEP_SUMMARY
+        echo "### Artifact Hash" >> $GITHUB_STEP_SUMMARY
+        echo "Artifact Hash ${{ steps.ARTIFACT.outputs.hash }}" >> $GITHUB_STEP_SUMMARY
 
     - name: Release
       uses: softprops/action-gh-release@v1
