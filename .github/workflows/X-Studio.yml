@@ -97,7 +97,6 @@ jobs:
       run: echo "hash=$(xmake l utils.ci.packageskey)" >> $GITHUB_OUTPUT
       
     - name: Echo Package Cache Status
-      id: XMAKE_PACKAGE_HASH
       shell: bash
       run: |
         echo "Old Package Hash      ${{ steps.XMAKE_PACKAGE_HASH_OLD.outputs.hash }}" >> $GITHUB_STEP_SUMMARY
