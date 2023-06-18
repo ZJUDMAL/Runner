@@ -85,6 +85,7 @@ jobs:
     # Fetch xmake dephash
     - name: Retrieve dependencies hash
       id: XMAKE_PACKAGE_HASH_OLD
+      shell: bash
       run: echo "hash=$(xmake l utils.ci.packageskey)" >> $GITHUB_OUTPUT
 
     - name: Install package
@@ -94,13 +95,15 @@ jobs:
 
     - name: Retrieve dependencies hash
       id: XMAKE_PACKAGE_HASH
+      shell: bash
       run: echo "hash=$(xmake l utils.ci.packageskey)" >> $GITHUB_OUTPUT
       
-    - name: Echo Package Cache Status
+    - name: Echo Package Cache Hash
       shell: bash
       run: |
-        echo "Old Package Hash      ${{ steps.XMAKE_PACKAGE_HASH_OLD.outputs.hash }}" >> $GITHUB_STEP_SUMMARY
-        echo "Current Package Hash  ${{ steps.XMAKE_PACKAGE_HASH.outputs.hash }}" >> $GITHUB_STEP_SUMMARY
+        echo "### Package Cache Hash"
+        echo "**Old Package Hash**      ${{ steps.XMAKE_PACKAGE_HASH_OLD.outputs.hash }}" >> $GITHUB_STEP_SUMMARY
+        echo "**Current Package Hash**  ${{ steps.XMAKE_PACKAGE_HASH.outputs.hash }}" >> $GITHUB_STEP_SUMMARY
         if [ "$steps.XMAKE_PACKAGE_HASH_OLD.outputs.hash" == "$steps.XMAKE_PACKAGE_HASH.outputs.hash" ]; then
           echo "**No need update**" >> $GITHUB_STEP_SUMMARY
         else
@@ -159,7 +162,10 @@ jobs:
         fi
       
     - name: Artifact Hash
-      run: echo "Artifact Hash ${{ steps.ARTIFACT.outputs.hash }}" >> $GITHUB_STEP_SUMMARY
+      shell: bash
+      run: |
+      echo "### Artifact Hash"
+      echo "Artifact Hash ${{ steps.ARTIFACT.outputs.hash }}" >> $GITHUB_STEP_SUMMARY
 
     - name: Release
       uses: softprops/action-gh-release@v1
