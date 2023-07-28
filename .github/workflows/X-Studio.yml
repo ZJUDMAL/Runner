@@ -12,6 +12,7 @@ run-name: ${{ github.event.inputs.name }}
 jobs:
   build:
     strategy:
+      fail-fast: false
       matrix:
         config:
         - { name: "Windows x64 debug", os: windows-latest, arch: x64, mode: debug, qt_arch: win64_msvc2019_64, qt_archive: 'qtbase qtdeclarative' }
