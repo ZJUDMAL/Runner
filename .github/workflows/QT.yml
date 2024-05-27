@@ -2,6 +2,10 @@ name: Qt
 
 on:
   workflow_dispatch:
+    inputs:
+      name:
+        description: Release version name
+        required: true
 
 run-name: ${{ github.event.inputs.name }}
 
@@ -47,8 +51,8 @@ jobs:
       with:
         files: Qt-${{ matrix.config.os }}-${{ matrix.config.arch }}.tar.gz
         token: ${{ secrets.XSTUDIOPACKAGES_PUBLISH_TOKEN }}
-        name: Qt
-        tag_name: Qt
+        name: ${{ github.event.inputs.name }}
+        tag_name: ${{ github.event.inputs.name }}
         append_body: true
         body_path: SHA256SUM
         repository: ZJUDMAL/XStudioPackages
