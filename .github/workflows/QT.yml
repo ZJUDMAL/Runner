@@ -36,6 +36,7 @@ jobs:
         cache: 'true'
         setup-python: 'false'
         archives: ${{ matrix.config.qt_archive }}
+        modules: ${{ matrix.config.modules }}
 
     - name: Archive and upload artifact
       shell: bash
