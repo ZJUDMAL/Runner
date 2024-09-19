@@ -64,7 +64,7 @@ jobs:
 
     - uses: xmake-io/github-action-setup-xmake@v1
       with:
-        xmake-version: '2.7.8'
+        xmake-version: '2.9.5'
         actions-cache-folder: '.xmake-cache'
         # xmake-cache-${actionsCacheKey}-${ver}-${sha}-${os.arch()}-${os.platform()}-${process.env.RUNNER_OS}
         actions-cache-key: base
@@ -91,7 +91,7 @@ jobs:
 
     - name: Install package
       run: |
-        xmake repo -u
+        xmake repo -uvD
         xmake require -y
 
     - name: Retrieve dependencies hash
