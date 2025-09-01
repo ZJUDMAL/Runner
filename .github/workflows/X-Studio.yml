@@ -18,7 +18,7 @@ jobs:
         - { name: "Windows x64 debug", os: windows-latest, arch: x64, mode: debug, qt_arch: win64_msvc2019_64, qt_archive: 'qtbase qtdeclarative' }
         - { name: "Windows x64 release", os: windows-latest, arch: x64, mode: release, qt_arch: win64_msvc2019_64, qt_archive: 'qtbase qtdeclarative' }
         - { name: "Ubuntu x86_64 debug", os: ubuntu-latest, arch: x86_64, mode: debug, qt_arch: gcc_64, qt_archive: 'qtbase qtdeclarative icu' }
-        - { name: "Ubuntu x86_64 release", os: ubuntu-latest, arch: x86_64, mode: release, qt_arch: gcc_64, qt_archive: 'qtbase qtdeclarative icu' }
+        - { name: "Ubuntu x86_64 releasedbg", os: ubuntu-latest, arch: x86_64, mode: releasedbg, qt_arch: gcc_64, qt_archive: 'qtbase qtdeclarative icu' }
         - { name: "MacOS x86_64 debug", os: macos-latest, arch: x86_64, mode: debug, qt_arch: clang_64, qt_archive: 'qtbase qtdeclarative qttools' }
         - { name: "MacOS x86_64 release", os: macos-latest, arch: x86_64, mode: release, qt_arch: clang_64, qt_archive: 'qtbase qtdeclarative qttools' }
 
