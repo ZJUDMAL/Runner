@@ -50,7 +50,6 @@ jobs:
         target: 'desktop'
         arch: ${{ matrix.config.qt_arch }}
         cache: 'true'
-        setup-python: 'false'
         archives: ${{ matrix.config.qt_archive }}
     
     # Force xmake to a specific folder (for cache)
