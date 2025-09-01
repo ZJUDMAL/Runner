@@ -155,11 +155,11 @@ jobs:
       shell: bash
       id: ARTIFACT
       run: |
-        tar -C ./package -zcvf X-Studio-${{ matrix.config.os }}-${{ matrix.config.arch }}-${{ matrix.config.mode }}.tar.gz .
+        tar -C ./package -zcvf X-Studio-${{ github.event.inputs.name }}-${{ matrix.config.os }}-${{ matrix.config.arch }}-${{ matrix.config.mode }}.tar.gz .
         if [ "$RUNNER_OS" == "macOS" ]; then
-          echo "hash=$(shasum -a 256 X-Studio-${{ matrix.config.os }}-${{ matrix.config.arch }}-${{ matrix.config.mode }}.tar.gz)" >> $GITHUB_OUTPUT
+          echo "hash=$(shasum -a 256 X-Studio-${{ github.event.inputs.name }}-${{ matrix.config.os }}-${{ matrix.config.arch }}-${{ matrix.config.mode }}.tar.gz)" >> $GITHUB_OUTPUT
         else
-          echo "hash=$(sha256sum X-Studio-${{ matrix.config.os }}-${{ matrix.config.arch }}-${{ matrix.config.mode }}.tar.gz)" >> $GITHUB_OUTPUT
+          echo "hash=$(sha256sum X-Studio-${{ github.event.inputs.name }}-${{ matrix.config.os }}-${{ matrix.config.arch }}-${{ matrix.config.mode }}.tar.gz)" >> $GITHUB_OUTPUT
         fi
       
     - name: Artifact Hash
@@ -172,7 +172,7 @@ jobs:
     - name: Release
       uses: softprops/action-gh-release@v1
       with:
-        files: X-Studio-${{ matrix.config.os }}-${{ matrix.config.arch }}-${{ matrix.config.mode }}.tar.gz
+        files: X-Studio-${{ github.event.inputs.name }}-${{ matrix.config.os }}-${{ matrix.config.arch }}-${{ matrix.config.mode }}.tar.gz
         token: ${{ secrets.XSTUDIOPACKAGES_PUBLISH_TOKEN }}
         name: ${{ github.event.inputs.name }}
         tag_name: ${{ github.event.inputs.name }}
