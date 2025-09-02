@@ -15,12 +15,12 @@ jobs:
       fail-fast: false
       matrix:
         config:
-        - { name: "Windows x64 debug", os: windows-latest, arch: x64, mode: debug }
-        - { name: "Windows x64 release", os: windows-latest, arch: x64, mode: release }
-        - { name: "Ubuntu x86_64 debug", os: ubuntu-latest, arch: x86_64, mode: debug }
-        - { name: "Ubuntu x86_64 release", os: ubuntu-latest, arch: x86_64, mode: release }
-        - { name: "MacOS x86_64 debug", os: macOS-latest, arch: x86_64, mode: debug }
-        - { name: "MacOS x86_64 release", os: macOS-latest, arch: x86_64, mode: release }
+        - { name: "Windows x64 debug", os: windows-2022, arch: x64, mode: debug }
+        - { name: "Windows x64 release", os: windows-2022, arch: x64, mode: release }
+        - { name: "Ubuntu x86_64 debug", os: ubuntu-22.04, arch: x86_64, mode: debug }
+        - { name: "Ubuntu x86_64 release", os: ubuntu-22.04, arch: x86_64, mode: release }
+        - { name: "MacOS x86_64 debug", os: macos-15, arch: x86_64, mode: debug }
+        - { name: "MacOS x86_64 release", os: macos-15, arch: x86_64, mode: release }
 
     name: ${{ matrix.config.name }}
     runs-on: ${{ matrix.config.os }}
